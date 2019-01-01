@@ -90,6 +90,7 @@
 			minutes = parseInt(seconds / 60);
 			seconds = seconds % 60;
 		}
+		attach3.innerHTML = ((minutes < 10)? '0' : '') + minutes + ':' + ((seconds < 10)? '0' : '') + seconds;
 	}
 	
 	function start(){
@@ -147,7 +148,7 @@
 	attach3.style.cursor = 'default';
 	attach3.style.width = '250px';
 	attach3.style.margin = '0 auto';
-	attach3.innerHTML = '00:00';
+	attach3.innerHTML = '01:00';
 	document.body.appendChild(attach3);
 	
 	var nextButton = document.createElement('input');
