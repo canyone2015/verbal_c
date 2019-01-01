@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="keywords" content="verbal, counting">
+	<meta name="description" content="Website with exercises to verbal counting"> 
+	<title>Verbal Counting</title>
+</head>
+<body style="text-align:center;font-family:Verdana, Tahoma, Arial;background:#aaa;">
+</body>
+<script>
+	var A = 1, B = 10;
+	var n = 4, k;
+	var minutes = 1, seconds = 0;
+	var timer;
+	var score = 0;
+	var oper = ['+', '–', '×', '÷'];
+	function getRandomInt(min, max){
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+	function next() {
+		score += 1;
+		var s = '';
+		var op = 0;
+		var pp = [0,0];
+		var ka = 0, kb = 0, kc = 0;
+		attach2.innerHTML = '';
+		for (var i = 1; i < n; i++) {
+			if (op == 3)
+				s += pp[getRandomInt(0, 1)] + ' ' + oper[getRandomInt(0, 2)] + ' ';
+			else {
+				op = getRandomInt(0, 3);
+				if (op < 3)
+					s += getRandomInt(A, B) + ' ' + oper[op] + ' ';
+				else {
+					pp[0] = getRandomInt(A, B);
+					pp[1] = getRandomInt(A, B);
+					s += pp[0]*pp[1] + ' ' + oper[op] + ' ';
+				}
+			}
+		}
+		if (op == 3)
+			s += pp[getRandomInt(0, 1)];
+		else
+			s += getRandomInt(A, B);
+		attach2.innerHTML += s;
+	}
+	function numbers(){
+		stop();
+		var aa = prompt('Введите минимальное число: ', A);
+		if (aa !== null){
+			if ((parseInt(aa) < -1000000) || (parseInt(aa) > 1000000)) aa = A;
+			A = aa;
+		}
+		var bb = prompt('Введите максимальное число: ', B);
+		if (bb !== null){
+			if ((parseInt(bb) < -1000000) || (parseInt(bb) > 1000000)) bb = B;
+			B = bb;
+		}
+		var cc = prompt('Введите количество чисел: ', n);
+		if (cc !== null){
+			if ((parseInt(cc) < 1) || (parseInt(cc) > 10)) cc = n;
+			n = cc;
+		}
+		if (A > B) {
+			var k = A;
+			A = B;
+			B = k;
+		}
+		A = parseInt(A);
+		B = parseInt(B);
+		n = parseInt(n);
+	}
+	
+	function time(){
+		stop();
+		var aa = prompt('Введите количество минут: ', minutes);
+		if (aa !== null){
+			if ((parseInt(aa) < 0) || (parseInt(aa) > 100)) aa = minutes;
+			minutes = aa;
+		}
+		var aa = prompt('Введите количество секунд: ', seconds);
+		if (aa !== null){
+			if ((parseInt(aa) < 0) || (parseInt(aa) > 60000)) aa = seconds;
+			seconds = aa;
+		}
+		minutes = parseInt(minutes);
+		seconds = parseInt(seconds);
+		if (!((seconds % 60) == seconds)) {
+			minutes = parseInt(seconds / 60);
+			seconds = seconds % 60;
+		}
+	}
+	
+	function start(){
+		clearInterval(timer);
+		nextButton.disabled = false;
+		score = 0;
+		k = minutes * 60 + seconds;
+		attach3.innerHTML = ((minutes < 10)? '0' : '') + minutes + ':' + ((seconds < 10)? '0' : '') + seconds;
+		next();
+		timer = setInterval(format, 1000);
+	}
+	function format() {
+		if (k == 0) {
+			clearInterval(timer);
+			alert('Отсчет времени окончен');
+			alert('Количество очков: ' + score +'. Т. е. '+ score/(minutes + (seconds / 60)) + ' примеров в минуту.');
+			nextButton.disabled = true;
+			score = 0;
+		}
+		else {
+			k -= 1;
+			min = parseInt(k / 60);
+			sec = (k - parseInt(min) * 60);
+			min = min < 10 ? "0" + min : min;
+			sec = sec < 10 ? "0" + sec : sec;
+			attach3.innerHTML = min + ':' + sec;
+		}
+    }
+	
+	function stop(){
+		if (timer !== null)
+			clearInterval(timer);
+		score = 0;
+		nextButton.disabled = true;
+		attach3.innerHTML = ((minutes < 10)? '0' : '') + minutes + ':' + ((seconds < 10)? '0' : '') + seconds;
+	}
+	
+	var attach1 = document.createElement('h1');
+	attach1.style='font-size:80px; background:#101010; color:white;';
+	attach1.style.border='5px solid #999'
+	attach1.style.cursor = 'default';
+	attach1.innerHTML = 'Verbal Counting';
+	document.body.appendChild(attach1);
+	
+	var attach2 = document.createElement('h2');
+	attach2.style='font-size:60px; background:#101010; color:white;';
+	attach2.style.border='5px solid #999'
+	attach2.style.cursor = 'default';
+	attach2.style.width = '1400px';
+	attach2.style.margin = '0 auto';
+	attach2.innerHTML = 'Example';
+	document.body.appendChild(attach2);
+	
+	var attach3 = document.createElement('h3');
+	attach3.style='font-size:30px; background:#101010; color:white;';
+	attach3.style.border='5px solid #999'
+	attach3.style.cursor = 'default';
+	attach3.style.width = '250px';
+	attach3.style.margin = '0 auto';
+	attach3.innerHTML = '00:00';
+	document.body.appendChild(attach3);
+	
+	var nextButton = document.createElement('input');
+	nextButton.type = 'submit';
+	nextButton.value = '> NEXT >';
+	nextButton.style.width = '100px';
+	nextButton.style.height = '75px';
+	nextButton.style.fontSize = '16px';
+	nextButton.style.cursor = 'pointer';
+	nextButton.setAttribute('onclick', 'next();');
+	nextButton.disabled = true;
+	document.body.appendChild(nextButton);
+	document.body.appendChild(document.createElement('br'));
+	
+	var start_button = document.createElement('input');
+	start_button.type = 'submit';
+	start_button.value = 'Старт';
+	start_button.style.width = '150px';
+	start_button.style.height = '60px';
+	start_button.style.fontSize = '14px';
+	start_button.style.cursor = 'pointer';
+	start_button.setAttribute('onclick', 'start();');
+	document.body.appendChild(start_button);
+	
+	var stop_button = document.createElement('input');
+	stop_button.type = 'submit';
+	stop_button.value = 'Стоп';
+	stop_button.style.width = '120px';
+	stop_button.style.height = '60px';
+	stop_button.style.fontSize = '14px';
+	stop_button.style.cursor = 'pointer';
+	stop_button.setAttribute('onclick', 'stop();');
+	document.body.appendChild(stop_button);
+	document.body.appendChild(document.createElement('br'));
+	
+	var num_button = document.createElement('input');
+	num_button.type = 'submit';
+	num_button.value = 'Числа';
+	num_button.style.width = '200px';
+	num_button.style.height = '40px';
+	num_button.style.fontSize = '14px';
+	num_button.style.cursor = 'pointer';
+	num_button.setAttribute('onclick', 'numbers();');
+	document.body.appendChild(num_button);
+	
+	var num_button = document.createElement('input');
+	num_button.type = 'submit';
+	num_button.value = 'Время';
+	num_button.style.width = '200px';
+	num_button.style.height = '40px';
+	num_button.style.fontSize = '14px';
+	num_button.style.cursor = 'pointer';
+	num_button.setAttribute('onclick', 'time();');
+	document.body.appendChild(num_button);
+</script>
+</html>
